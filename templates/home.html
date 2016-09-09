@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+   <head>
+		<title>colorrise</title>
+		<link rel="stylesheet" href="/static/style.css">
+		<script>
+	   		function httpGetAsync(theUrl, callback)
+			{
+			    var xmlHttp = new XMLHttpRequest();
+			    xmlHttp.onreadystatechange = function() { 
+			        if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+			            callback(xmlHttp.responseText);
+			    }
+			    xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+			    xmlHttp.send(null);
+			}
+
+			function response(text)
+			{
+			}
+
+			function update_color(image)
+			{
+				var wheel = document.getElementById("color-wheel")
+				var canvas = document.createElement("canvas")
+
+				canvas.width = wheel.width
+				canvas.height = wheel.height
+				ctx = canvas.getContext("2d")
+				
+				ctx.drawImage(wheel, 0,0, wheel.width, wheel.height);
+				var color = ctx.getImageData(event.offsetX, event.offsetY, 1,1).data;
+				var colorStr = "%23" + color[0].toString(16) + color[1].toString(16) + color[2].toString(16)
+				var request = "set?color=" + colorStr
+				console.log(request)
+				
+				httpGetAsync(request, response)
+			}
+			
+	   	</script>
+	   	<style>
+	   		.moon {
+	   			position: absolute;
+	   			display:block;
+	   			width: 600px;
+	   			height: 600px;
+	   			top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+	   		}
+	   		.moon img {
+	   			position: absolute;
+	   			top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+	   			max-width:500px;
+				max-height:500px;
+	   		}
+	   		.moon .after {
+	   			opacity:0.0;
+    			transition: all 0.2s ease-in-out;
+	   		}
+	   		.moon:hover .after {
+	   			opacity:0.5;
+    			transition: all 0.2s ease-in-out;
+	   		}
+	   	</style>
+	</head>
+	<body>
+		<script src="/static/jscolor.js"></script>
+   		<div class=centered>
+   			<div class="moon">
+   				<img src="/static/moon-512.png" />
+   				<img class="after" id="color-wheel" src="/static/color-wheel.png" onclick="update_color(this)" />
+   			</div>
+   			<div>
+   				<img src="/static/moon-rise.png" />
+   			</div>
+		</div>
+   	</body>
+</html>
